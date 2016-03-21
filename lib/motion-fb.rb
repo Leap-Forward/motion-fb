@@ -32,7 +32,7 @@ module Motion::Project
 
     def set_up_application_query_schemes
       self.info_plist["LSApplicationQueriesSchemes"] ||= []
-      self.info_plist["LSApplicationQueriesSchemes"] = self.info_plist["LSApplicationQueriesSchemes"] | [ "fbapi", "fbapi20130214", "fbapi20130410", "fbapi20130702", "fbapi20131010", "fbapi20131219", "fbapi20140410", "fbapi20140116", "fbapi20150313", "fbapi20150629", "fbauth", "fbauth2", "fb-messenger-api20140430" ]
+      self.info_plist["LSApplicationQueriesSchemes"] = self.info_plist["LSApplicationQueriesSchemes"] | [ "fb", "fbapi", "fbapi20130214", "fbapi20130410", "fbapi20130702", "fbapi20131010", "fbapi20131219", "fbapi20140410", "fbapi20140116", "fbapi20150313", "fbapi20150629", "fbauth", "fbauth2", "fb-messenger-api20140430" ]
     end
 
     def set_up_cf_bundle_url_types(app_id)
@@ -42,6 +42,7 @@ module Motion::Project
       self.info_plist["CFBundleURLTypes"].each do |hash|
         if hash["CFBundleURLSchemes"] && hash["CFBundleURLSchemes"].is_a?(Array)
           hash["CFBundleURLSchemes"] << "fb#{app_id}"
+          hash["CFBundleURLSchemes"] << "fbauth2" 
           hash["CFBundleURLName"] ||= self.identifier
           found = true
         end
@@ -50,7 +51,7 @@ module Motion::Project
       unless found
         self.info_plist["CFBundleURLTypes"] << {
           "CFBundleURLName" => self.identifier,
-          "CFBundleURLSchemes" => [ "fb#{app_id}" ]
+          "CFBundleURLSchemes" => [ "fb#{app_id}", "fbauth2"]
         }
       end
     end
@@ -59,19 +60,19 @@ module Motion::Project
       possible_pods = {
         core: {
           pod: 'FBSDKCoreKit',
-          version: '~> 4.5.0'
+          version: '~> 4.10.1'
         },
         login: {
           pod: 'FBSDKLoginKit',
-          version: '~> 4.5.0'
+          version: '~> 4.10.1'
         },
         messenger: {
           pod: 'FBSDKMessengerShareKit',
-          version: '~> 1.3.0'
+          version: '~> 1.3.2'
         },
         share: {
           pod: 'FBSDKShareKit',
-          version: '~> 4.5.0'
+          version: '~> 4.10.1'
         }
       }
 
