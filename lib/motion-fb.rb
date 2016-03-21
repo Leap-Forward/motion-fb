@@ -32,7 +32,7 @@ module Motion::Project
 
     def set_up_application_query_schemes
       self.info_plist["LSApplicationQueriesSchemes"] ||= []
-      self.info_plist["LSApplicationQueriesSchemes"] = self.info_plist["LSApplicationQueriesSchemes"] | [ "fb", "fbapi", "fbapi20130214", "fbapi20130410", "fbapi20130702", "fbapi20131010", "fbapi20131219", "fbapi20140410", "fbapi20140116", "fbapi20150313", "fbapi20150629", "fbauth", "fbauth2", "fb-messenger-api20140430" ]
+      self.info_plist["LSApplicationQueriesSchemes"] = self.info_plist["LSApplicationQueriesSchemes"] | ["fbapi", "fb-messenger-api", "fbauth2", "fbshareextension" ]
     end
 
     def set_up_cf_bundle_url_types(app_id)
@@ -40,20 +40,24 @@ module Motion::Project
 
       found = false
       self.info_plist["CFBundleURLTypes"].each do |hash|
+        puts hash
         if hash["CFBundleURLSchemes"] && hash["CFBundleURLSchemes"].is_a?(Array)
           hash["CFBundleURLSchemes"] << "fb#{app_id}"
-          hash["CFBundleURLSchemes"] << "fbauth2" 
+          # hash["CFBundleURLSchemes"] << "fbauth2" 
           hash["CFBundleURLName"] ||= self.identifier
           found = true
         end
       end
 
       unless found
+        puts 'not found, adding'
         self.info_plist["CFBundleURLTypes"] << {
           "CFBundleURLName" => self.identifier,
-          "CFBundleURLSchemes" => [ "fb#{app_id}", "fbauth2"]
+          "CFBundleURLSchemes" => [ "fb#{app_id}", "fbauth2" ]
         }
       end
+
+      puts "Result: #{self.info_plist["CFBundleURLTypes"].inspect}"
     end
 
     def add_fb_pods(fb_pods)
